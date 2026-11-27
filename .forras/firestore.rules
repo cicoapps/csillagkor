@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Mindenki csak a saját körét olvashatja és írhatja.
+    match /users/{uid} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['me', 'meT', 'meC', 'people', 'consentAt'])
+        && request.resource.data.people is list
+        && request.resource.data.people.size() <= 3
+        && request.resource.data.me is string && request.resource.data.me.size() <= 10;
+    }
+
+    // Névtelen számlálás: bárki írhat egy rövid eseményt, de senki nem olvashatja vissza az appból.
+    match /events/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['e', 'k', 'v', 't', 'm'])
+        && request.resource.data.e is string && request.resource.data.e.size() <= 30
+        && request.resource.data.k is string && request.resource.data.k.size() <= 12
+        && request.resource.data.v is string && request.resource.data.v.size() <= 40
+        && (!('m' in request.resource.data) || (request.resource.data.m is string && request.resource.data.m.size() <= 400))
+        && request.resource.data.t == request.time;
+      allow read, update, delete: if false;
+    }
+  }
+}

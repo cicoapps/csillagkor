@@ -1,0 +1,163 @@
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="app">
+  <header>
+    <div class="motif spin" data-ring aria-hidden="true"></div>
+    <h1>Csillagkör</h1>
+    <p class="tag">Mit súgnak a csillagok a kapcsolataidról? Párod, családod, barátaid.</p>
+    <div class="acct" id="acctBar" hidden><span id="acctName"></span><button type="button" class="linkbtn" id="toCircle">A köröm</button></div>
+  </header>
+
+  <p class="note preview" id="previewNote" hidden>Előnézet: a fiókok még nincsenek bekötve, ezért itt minden csak ebben a böngészőben mentődik el.</p>
+
+  <section class="card mark" id="circle" hidden>
+    <div class="wm spin" data-ring aria-hidden="true"></div>
+    <h2>A köröd</h2>
+    <p class="tag" style="margin:0" id="circleDate"></p>
+    <ul class="people" id="people"></ul>
+    <p class="small" id="circleEmpty" hidden>Még senkit nem mentettél el. Nézz meg valakit lent, és add hozzá a körödhöz.</p>
+    <p class="small" id="circleLimit"></p>
+    <button class="btn ghost" type="button" id="newCompare">Új ember hozzáadása</button>
+    <details class="acctset">
+      <summary>Fiók</summary>
+      <p class="small" id="acctMail"></p>
+      <div class="ovbtns"><button class="btn ghost" type="button" id="logout">Kilépés</button><button class="btn danger" type="button" id="delAcct">Fiók törlése</button></div>
+      <p class="small" id="delMsg" hidden></p>
+    </details>
+  </section>
+
+  <form class="card" id="form" novalidate>
+    <div class="person">
+      <div class="who">Te</div>
+      <div><label for="d1">Mikor születtél?</label><input type="date" id="d1" required min="1920-01-01" max="2026-12-31"></div>
+      <div class="row2">
+        <div><label for="t1">Időpont <span class="opt">ha tudod</span></label><input type="time" id="t1"></div>
+        <div class="place"><label for="c1">Hely <span class="opt">ha tudod</span></label><input type="text" id="c1" autocomplete="off" placeholder="pl. Szeged" role="combobox" aria-expanded="false" aria-controls="c1s"><ul class="sugg" id="c1s" role="listbox" hidden></ul></div>
+      </div>
+      <label class="check" for="u1"><input type="checkbox" id="u1"> Nem tudom a pontos időt</label>
+      <div class="placeinfo" id="c1i"></div>
+    </div>
+    <div class="person">
+      <div class="who">Ő</div>
+      <div><label for="rel">Ki ő neked?</label><select id="rel"><option value="par">A párom</option><option value="gyerek">A gyerekem</option><option value="szulo">A szülőm</option><option value="testver">A testvérem</option><option value="barat">A barátom</option><option value="munkatars">A munkatársam</option><option value="egyeb">Egyéb</option></select></div>
+      <div id="relxw" hidden><label for="relx">Ki ő neked? (pl. szomszéd, főnök)</label><input type="text" id="relx" maxlength="30" autocomplete="off" placeholder="Kapcsolat, ne nevet írj"></div>
+      <div><label for="d2" id="d2l">Mikor született?</label><input type="date" id="d2" required min="1920-01-01" max="2026-12-31"></div>
+      <div class="row2">
+        <div><label for="t2">Időpont <span class="opt">ha tudod</span></label><input type="time" id="t2"></div>
+        <div class="place"><label for="c2">Hely <span class="opt">ha tudod</span></label><input type="text" id="c2" autocomplete="off" placeholder="pl. Szeged" role="combobox" aria-expanded="false" aria-controls="c2s"><ul class="sugg" id="c2s" role="listbox" hidden></ul></div>
+      </div>
+      <label class="check" for="u2"><input type="checkbox" id="u2"> Nem tudom a pontos időt</label>
+      <div class="placeinfo" id="c2i"></div>
+    </div>
+    <button class="btn" type="submit">Mutasd, mit súgnak a csillagok</button>
+    <p class="formerr" id="formerr" hidden></p>
+    <p class="small center">Az időpont és a hely nem kötelező, de velük kiszámoljuk a holdjegyet és az aszcendenst is, így sokkal pontosabb az eredmény.</p>
+    <p class="small center" id="formNote">Regisztráció nélkül is megnézheted, és semmit nem mentünk el.</p>
+  </form>
+
+  <div id="out" hidden>
+    <section class="card result" aria-live="polite">
+      <div class="signs" id="pairTitle"></div>
+      <div class="wheel"><svg id="wheel" viewBox="0 0 320 320" role="img" aria-label="Közös csillagkerék"></svg></div>
+      <div class="legend"><span class="la">Te</span><span class="lb" id="legB">Ő</span></div>
+      <div class="verdict" id="verdict"></div>
+      <p class="desc" id="desc"></p>
+      <div class="numrow">
+        <div class="num-box"><label>A te számod</label><b id="k1">–</b><div class="t" id="k1t"></div></div>
+        <div class="num-box"><label id="k2l">Az ő száma</label><b id="k2">–</b><div class="t" id="k2t"></div></div>
+      </div>
+      <p class="small">Kabbalisztikus születési szám, Cheiro rendszere szerint. Számaitok összhangja: <b id="kp" class="gold">–</b></p>
+      <button class="btn ghost" type="button" id="shareBtn">Megosztom a kártyánkat</button>
+    </section>
+
+    <section class="card">
+      <h2>Születési képletek</h2>
+      <p class="tag" style="margin:0">A bolygók állása a születésetek pillanatában.</p>
+      <div class="chart-wrap"><table><thead><tr><th></th><th>Te</th><th id="h2">Ő</th></tr></thead><tbody id="chartBody"></tbody></table></div>
+      <p class="small" id="chartNote"></p>
+      <button class="btn ghost" type="button" id="addTime" hidden>Megadom az időpontot és a helyet</button>
+    </section>
+
+    <section class="card fbk" id="fbk">
+      <h2>Mennyire talált?</h2>
+      <div class="stars" id="stars" role="group" aria-label="Mennyire talált, 1-től 5-ig"></div>
+      <div class="stxt" id="stxt">Koppints a csillagokra</div>
+      <div id="fbmore" hidden>
+        <span class="rq" id="chipQ"></span>
+        <div class="chips" id="chips"></div>
+        <label for="fbtxt2" class="rq" style="text-transform:none;letter-spacing:0;margin-top:12px">Mit írnál másképp? <span class="opt">nem kötelező, nevet ne írj</span></label>
+        <textarea id="fbtxt2" maxlength="300"></textarea>
+        <button class="btn" type="button" id="fbgo">Elküldöm</button>
+      </div>
+      <p class="fbmsg center" id="fbok" hidden>Köszönjük! Ebből tanulunk a legtöbbet.</p>
+    </section>
+
+    <section class="card save" id="saveCard">
+      <h2 id="saveTitle">Mentsd el a körödbe</h2>
+      <ul class="perks" id="perks">
+        <li>Minden nap új üzenet arról, mit súgnak a csillagok rólatok</li>
+        <li>Egy helyen látod a párodat, a családodat és a barátaidat</li>
+        <li>3 ember ingyen</li>
+      </ul>
+      <button class="btn" type="button" id="saveBtn">Ingyenes regisztráció és mentés</button>
+      <p class="small center" id="saveMsg" hidden></p>
+    </section>
+
+    <section class="card mark hook" id="hookLinks">
+      <div class="wm spin" data-ring aria-hidden="true"></div>
+      <h2 id="hlTitle">Kötések köztetek</h2>
+      <ul class="links" id="teaser"></ul>
+      <button class="btn ghost" type="button" data-go="premium">Mi lesz még a teljes elemzésben?</button>
+    </section>
+
+    <section class="card hook" id="hookMoon">
+      <h2>A rejtett éned: a Hold</h2>
+      <p class="tag" style="margin:0">A napjegy az, amit mutatsz. A holdjegy az, amit érzel.</p>
+      <div class="moons" id="moons"></div>
+      <p class="desc" id="moonNote"></p>
+      <button class="btn ghost" type="button" data-fix>Megadom az időpontot</button>
+    </section>
+
+    <section class="card mark" id="premium">
+      <div class="wm l spin" data-ring aria-hidden="true"></div>
+      <h2>Teljes elemzés <span class="badge">Hamarosan</span></h2>
+      <p class="tag" style="margin:0">Ezen dolgozunk most. Ez kerül majd bele:</p>
+      <ul class="soon" id="soonList"></ul>
+    </section>
+  </div>
+
+  <details class="card legal" id="adatok">
+    <summary>Adatkezelési tájékoztató</summary>
+    <p><b>Adatkezelő:</b> <span class="ctl">Polgár Norbert</span>, e-mail: <span class="ctlm">cicoapps@gmail.com</span>.</p>
+    <p><b>Regisztráció nélkül</b> semmilyen személyes adatot nem kezelünk: a születési dátumokat a készüléked számolja, nem küldjük el sehová. Névtelen használati statisztikát gyűjtünk (például hány eredményt néztek meg, melyik kapcsolattípust, hányan kattintottak a teljes elemzésre), és ha értékeled az eredményt, az értékelést és a megjegyzésedet. Ebben nincs név, dátum, e-mail-cím vagy IP-cím, és sütit sem használunk hozzá.</p>
+    <p><b>Regisztráció esetén</b> ezeket tároljuk: az e-mail-címedet (Google-belépésnél a Google-fiókod nevét is), a saját születési adataidat (dátum, és ha megadod, időpont és település), és akiket a körödhöz adsz: a kapcsolat típusát, a születési adataikat és a becenevet, ha megadsz ilyet. Az adatokat csak arra használjuk, hogy a köröd és a napi üzenetek működjenek. Másnak nem adjuk át, és reklámra nem használjuk.</p>
+    <p><b>Jogalap:</b> a hozzájárulásod, amit a regisztrációnál adsz meg. Más emberek születési dátumát csak akkor add meg, ha ők nem bánják; nevet ne írj, becenév elég.</p>
+    <p><b>Tárolás:</b> a Google Firebase szolgáltatásában. A köröd adatai az Európai Unióban (Frankfurt) lévő szerveren vannak, a belépéshez szükséges e-mail-címet a Google Firebase belépési szolgáltatása kezeli. Az adatokat addig őrizzük, amíg a fiókod megvan.</p>
+    <p><b>Jogaid:</b> a fiókodat és minden adatodat bármikor törölheted a „Fiók → Fiók törlése” gombbal. Kérhetsz tájékoztatást vagy helyesbítést a fenti e-mail-címen. Panasszal a Nemzeti Adatvédelmi és Információszabadság Hatósághoz (NAIH, naih.hu) fordulhatsz.</p>
+    <p>A Csillagkör szórakoztató célú. Az asztrológia és a számmisztika nem tudományos módszer.</p>
+  </details>
+
+  <footer><span class="fmotif" data-ring="mini" aria-hidden="true"></span>Csillagkör · szórakoztató célra</footer>
+</div>
+
+<div class="overlay" id="auth" hidden role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="ovbox card">
+    <h2 id="authTitle">Regisztráció vagy belépés</h2>
+    <p class="small" style="margin-top:0">Jelszó nem kell. Ha már regisztráltál, ugyanígy lépsz be.</p>
+    <label class="consent" for="agree"><input type="checkbox" id="agree"> <span>Elolvastam az <a href="#adatok" class="inl" id="toPrivacy">adatkezelési tájékoztatót</a>, és hozzájárulok, hogy a Csillagkör tárolja az általam megadott adatokat.</span></label>
+    <button class="btn gbtn" type="button" id="gLogin"><img class="glogo" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" width="20" height="20" onerror="this.remove()"><span>Folytatás Google-fiókkal</span></button>
+    <div class="or">vagy</div>
+    <label for="email" class="sublabel">E-mail-cím</label>
+    <input type="email" id="email" autocomplete="email" inputmode="email" placeholder="email@cimed.hu">
+    <button class="btn ghost" type="button" id="mLogin">Küldd a belépőlinket</button>
+    <p class="fbmsg" id="authMsg" hidden></p>
+    <button class="linkbtn" type="button" id="authX" style="align-self:center">Mégsem</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov" hidden role="dialog" aria-modal="true" aria-label="Megosztható kártya">
+  <div class="ovbox">
+    <img id="ovimg" alt="Csillagkör kártya">
+    <p class="small center" id="ovtxt">Tartsd hosszan nyomva a képet, és mentsd el vagy küldd tovább.</p>
+    <div class="ovbtns"><a class="btn" id="ovdl" download="csillagkor.png">Kép letöltése</a><button class="btn ghost" type="button" id="ovx">Bezár</button></div>
+  </div>
+</div>
